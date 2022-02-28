@@ -19,7 +19,7 @@ DOCUMENTATION = """
         plugin:
             description: token that ensures this is a source file for the 'ciscorpime' plugin.
             required: True
-            choices: ['ciscoprime']
+            choices: ['ciscoprime', 'mschedrin.ciscoprime.ciscoprime']
             type: str
         api_endpoint:
             description: "Endpoint of the Cisco Prime API, for example: https://<prime ip address>/webacs/api/v4"
