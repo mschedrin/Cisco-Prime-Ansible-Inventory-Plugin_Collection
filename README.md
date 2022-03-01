@@ -39,3 +39,6 @@ Enable API usage for prime user in Cisco Prime GUI.
 Run ansible inventory and verify results `ansible-inventory -i cpi-inventory.yml --graph`. If it fails or works unexpected try adding `-vvvvv` key to the command to increase output verbosity.
 
 ## Installation in AWX
+
+## Known issues
+Due to Cisco Prime API limitations the script will fail if device group names contain comma. 

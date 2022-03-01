@@ -1,4 +1,4 @@
-import urllib3, requests, re, sys
+import urllib3, requests, re, sys, time
 # from pprint import pprint
 from ansible.module_utils.six.moves.urllib.parse import urljoin
 from ansible.errors import AnsibleError
@@ -113,8 +113,17 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 self._cache[self.cache_key] = {url: ''}
             self.display.vvvvv(f"{sys._getframe(  ).f_code.co_name}:{sys._getframe(  ).f_lineno} Sending get request {url}")
             r = requests.get(url, auth=(self.api_user, self.api_password), verify=self.validate_certs)
+            if r.status_code == 503:
+                self.display.vvvvv(f"{sys._getframe(  ).f_code.co_name}:{sys._getframe(  ).f_lineno} Got error 503 when sending get request {url}")
+                if 'errorDocument' in r.json() and 'message' in r.json()['errorDocument']:
+                    self.display.vvvvv(f"{sys._getframe(  ).f_code.co_name}:{sys._getframe(  ).f_lineno} Error message: {r.json()['errorDocument']['message']}")
+                self.display.vv(f"Got error 503 from api, it's supposedly API rate limiting. Sleep 1 second and retry.")
+                time.sleep(1)
+                return self._http_request(url)
+            # if r.status_code == 500:
+            #     self.display.vvvvv(f"{sys._getframe(  ).f_code.co_name}:{sys._getframe(  ).f_lineno} Error message: {r.json()['errorDocument']['message']}")
             if r.status_code not in range(200,300):
-                raise AnsibleError(f'Got unexpected HTTP code {r.status_code} when sending GET request {url}')
+                raise AnsibleError(f'Got unexpected HTTP code {r.status_code} when sending GET request {url} Response payload: {r.json()}')
             self._cache[self.cache_key][url] = r.json()
         else: 
             self.display.vvvvv(f"{sys._getframe(  ).f_code.co_name}:{sys._getframe(  ).f_lineno} Cache hit")
@@ -209,8 +218,9 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     def _populate_ansible_inventory(self,):
         self.display.vvvv(f"In {sys._getframe(  ).f_code.co_name}:{sys._getframe(  ).f_lineno}")
         raw_hosts = self._get_devices()
+        # get all groups
         groups = self._get_groups()
-        # add all groups
+        # add all groups to ansible inventory
         for grp_id, group in groups.items():
             self._add_group(to_safe_group_name(group['groupName']))
         # establish group hierarchy
@@ -224,7 +234,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
                 except Exception as e:
                     self.display.warning(str(e))
                     continue
-        # add all hosts
+        # add all hosts to ansible inventory
         for raw_host in raw_hosts:
             host = raw_host['devicesDTO']
             if not ( host['adminStatus'] == "UNMANAGED" and self.exclude_unmanaged ): 
