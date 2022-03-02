@@ -13,7 +13,7 @@ Install necessary python modules `pip install urllib3 requests`
 
 Install Cisco-Prime-Ansible-Inventory-Plugin_Collection `ansible-galaxy install -r collections/requirements.yml `
 
-Make sure it has installed correctly: `ansible-doc -t inventory mschedrin.ciscoprime.ciscoprime`. You should see plugin documentation. 
+Make sure it got installed correctly: `ansible-doc -t inventory mschedrin.ciscoprime.ciscoprime`. You should see plugin documentation. 
 
 Create inventory file `cpi-inventory.yaml`. Example:
 ```
@@ -54,7 +54,7 @@ collections:
 ```
 `cpi_inventory.yml` is a configuration file for your inventory. You can check documentation by running `ansible-doc -t inventory mschedrin.ciscoprime.ciscoprime` on an ansible installation. [Installation and usage in Ansible](#installation-and-usage-in-ansible).
 
-Example file:
+Example `cpi_inventory.yml`:
 ```
 ---
 plugin: mschedrin.ciscoprime.ciscoprime
