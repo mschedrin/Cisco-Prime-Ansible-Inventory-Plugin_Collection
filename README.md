@@ -1,4 +1,5 @@
 # Ansible galaxy collection with dynamic inventory plugin for Cisco Prime Infrastructure
+Ansible galaxy collection that contains dynamic inventory plugin for Ansible that uses Cisco Prime Infrastructure as an inventory source. 
 
 ## Installation and usage in Ansible 
 Create file `collections/requirements.yml` in your working directory:
@@ -51,7 +52,8 @@ collections:
      type: git
      version: master
 ```
-`cpi_inventory.yml` is a configuration file for your inventory. You can check documentation by running `ansible-doc -t inventory mschedrin.ciscoprime.ciscoprime` on an ansible installation, check out [Installation and usage in Ansible](installation-and-usage-in-ansible).
+`cpi_inventory.yml` is a configuration file for your inventory. You can check documentation by running `ansible-doc -t inventory mschedrin.ciscoprime.ciscoprime` on an ansible installation. [Installation and usage in Ansible](#installation-and-usage-in-ansible).
+
 Example file:
 ```
 ---
@@ -101,7 +103,7 @@ Create Inventory. Create Inventory Source. Use Credential and Project that you c
 
 Run inventory sync.
 
-If it dows not work as expected, increase Inventory Source verbosity to debugging level and check inventory sync job output. 
+If it does not work as expected, increase Inventory Source verbosity to debugging level and check inventory sync job output. 
 
 ## Known issues
 Due to Cisco Prime API limitations the script will fail if device group names contain comma. 
