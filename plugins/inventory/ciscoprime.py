@@ -185,7 +185,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     
     def _get_devices_by_group_path(self, group_path):
         #url = f"{self.api_endpoint}/data/InventoryDetails.json?.group=/{group_path}&.full=true" # much more details
-        url = f"{self.api_endpoint}/data/Devices.json?.group=/{group_path}&.full=true"
+        url = f"{self.api_endpoint}/data/Devices.json?.group=/{group_path}&.full=true&.maxResults={self.api_max_results}"
         r = self._http_request(url)['queryResponse']
         if r['@count'] > 0:
             return r['entity']
